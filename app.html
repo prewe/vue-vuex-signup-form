@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+    <div id="app">
+
+        <div class="usercard">
+            <h1 class="usercard__header">New User</h1>
+            <p class="usercard__user-info">{{ firstname }} {{ lastname }} / {{ login }} <br> {{ email }}</p>
+        </div>
+
+        <form @submit="checkForm" class="signup">
+            <h1 class="signup__header">Sign up</h1>
+            <div class="login">
+                <label for="login" class="login__header">Login</label>
+                <input type="text" id="login" class="login__input" placeholder="Введите логин" v-model="login">
+            </div>
+            <div class="email">
+                <label for="email" class="email__header">e-mail</label>
+                <input type="text" id="email" class="email__input" placeholder="Введите e-mail" v-model="email">
+            </div>
+            <div class="password">
+                <label for="password" class="password__header">Password</label>
+                <input type="password" id="password" class="password__input" placeholder="Введите пароль" v-model="password">
+            </div>
+            <div class="firstname">
+                <label for="firstname" class="firstname__header">First name</label>
+                <input type="text" id="firstname" class="firstname__input" placeholder="Введите имя" v-model="firstname">
+            </div>
+            <div class="lastname">
+                <label for="lastname" class="lastname__header">Last name</label>
+                <input type="text" id="lastname" class="lastname__input" placeholder="Введите фамилию" v-model="lastname">
+            </div>
+            <div class="country">
+                <label for="country" class="country__header">Country</label>
+                <v-select class="country__select" v-model="selectedCountry" label="name" :options="countrys" placeholder="Выберите страну"></v-select>
+            </div>
+            <div class="city">
+                <label for="city" class="city__header">City</label>
+                <v-select class="vselect" v-model="selectedCity" :disabled="!selectedCountry" label="name" :options="selectedCountry.citys" placeholder="Выберите город"></v-select>
+            </div>
+            <div class="birthday">
+                <label for="birthday" class="birthday__header">Date of birth</label>
+                <vuejs-datepicker v-model="dateofbirth" placeholder="Выберите дату рождения"></vuejs-datepicker>
+            </div>
+            <div class="zipcode">
+                <label for="zipcode" class="zipcode__header">Zip code</label>
+                <input type="text" id="zipcode" class="zipcode__input" placeholder="Введите индекс" v-model="zipcode">
+            </div>
+
+            <p class="errors" v-if="errors.length">
+                <b>Пожалуйста исправьте указанные ошибки:</b>
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </p>
+            <p class="success" v-if="success">Успех!</p>
+            
+
+            <button class="signup-button">Sign up</button>
+            
+        </form>
+
+    </div>
+
+    <script src="https://unpkg.com/vuex@3.1.0/dist/vuex.js"></script>
+    <script src="https://unpkg.com/vue@latest"></script>
+    <script src="https://unpkg.com/vue-select@latest"></script>
+    <script src="https://unpkg.com/vuejs-datepicker"></script>
+    <script>
+
+        Vue.component('v-select', VueSelect.VueSelect);
+
+        const store = new Vuex.Store({
+            strict: true,
+            state: {
+                login: '',
+                email: '',
+                password: '',
+                firstname: '',
+                lastname: '',
+                dateofbirth: '',
+                zipcode: '',
+                selectedCountry: '',
+                selectedCity: '',
+            },
+            mutations: {
+                updateLogin (state, login) {
+                    state.login = login
+                },
+                updateEmail (state, email) {
+                    state.email = email
+                },
+                updatePassword (state, password) {
+                    state.password = password
+                },
+                updateFirstName (state, firstname) {
+                    state.firstname = firstname
+                },
+                updateLastName (state, lastname) {
+                    state.lastname = lastname
+                },
+                updateDateOfBirth (state, dateofbirth) {
+                    state.dateofbirth = dateofbirth
+                },
+                updateZipCode (state, zipcode) {
+                    state.zipcode = zipcode
+                },
+                updateSelectedCountry (state, selectedCountry) {
+                    state.selectedCountry = selectedCountry
+                },
+                updateSelectedCity (state, selectedCity) {
+                    state.selectedCity = selectedCity
+                }
+            }
+        })
+        
+        var app = new Vue({
+            el: '#app',
+            store,
+            components: {
+                vuejsDatepicker
+            },
+            data: {
+                success: false,
+                errors: [],
+                countrys: [
+                    {
+                        name: "Россия",
+                        citys: [ { name: "Москва"}, { name: "Санкт-Петербург" }, { name: "Томск" } ]
+                    },
+                    {
+                        name: "Беларусь",
+                        citys: [ { name: "Минск"}, { name: "Брест" }, { name: "Гродно" } ]
+                    },
+                    {
+                        name: "Украина",
+                        citys: [ { name: "Киев"}, { name: "Харьков" }, { name: "Одесса" } ]
+                    }
+                ]
+            },
+            methods: {
+                checkForm: function (e) {
+                    if (this.login && this.email && this.password) {
+                        return true;
+                    }
+
+                    this.errors = [];
+
+                    if (!this.login) {
+                        this.errors.push('Требуется указать логин.');
+                    }
+                    if (!this.email) {
+                        this.errors.push('Требуется указать E-mail.');
+                    }
+                    if (!this.password) {
+                        this.errors.push('Требуется указать пароль.');
+                    }
+
+                    e.preventDefault();
+                }
+            },
+            computed: {
+                login: {
+                    get () {
+                        return this.$store.state.login
+                    },
+                    set (value) {
+                        this.$store.commit('updateLogin', value)
+                    }
+                },
+                email: {
+                    get () {
+                        return this.$store.state.email
+                    },
+                    set (value) {
+                        this.$store.commit('updateEmail', value)
+                    }
+                },
+                password: {
+                    get () {
+                        return this.$store.state.password
+                    },
+                    set (value) {
+                        this.$store.commit('updatePassword', value)
+                    }
+                },
+                firstname: {
+                    get () {
+                        return this.$store.state.firstname
+                    },
+                    set (value) {
+                        this.$store.commit('updateFirstName', value)
+                    }
+                },
+                lastname: {
+                    get () {
+                        return this.$store.state.lastname
+                    },
+                    set (value) {
+                        this.$store.commit('updateLastName', value)
+                    }
+                },
+                dateofbirth: {
+                    get () {
+                        return this.$store.state.dateofbirth
+                    },
+                    set (value) {
+                        this.$store.commit('updateDateOfBirth', value)
+                    }
+                },
+                zipcode: {
+                    get () {
+                        return this.$store.state.zipcode
+                    },
+                    set (value) {
+                        this.$store.commit('updateZipCode', value)
+                    }
+                },
+                selectedCountry: {
+                    get () {
+                        return this.$store.state.selectedCountry
+                    },
+                    set (value) {
+                        this.$store.commit('updateSelectedCountry', value)
+                    }
+                },
+                selectedCity: {
+                    get () {
+                        return this.$store.state.selectedCity
+                    },
+                    set (value) {
+                        this.$store.commit('updateSelectedCity', value)
+                    }
+                }
+            }   
+        })
+        
+    
+    </script>
+    
+</body>
+</html>
