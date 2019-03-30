@@ -41,11 +41,11 @@
             </div>
             <div class="country">
                 <label for="country" class="country__header">Country</label>
-                <v-select class="country__select" v-model="selectedCountry" label="name" :options="countrys" placeholder="Выберите страну"></v-select>
+                <v-select class="country__select" v-model="selectedCountry" label="name" :options="countries" placeholder="Выберите страну"></v-select>
             </div>
             <div class="city">
                 <label for="city" class="city__header">City</label>
-                <v-select class="vselect" v-model="selectedCity" :disabled="!selectedCountry" label="name" :options="selectedCountry.citys" placeholder="Выберите город"></v-select>
+                <v-select class="vselect" v-model="selectedCity" :disabled="!selectedCountry" label="name" :options="selectedCountry.cities" placeholder="Выберите город"></v-select>
             </div>
             <div class="birthday">
                 <label for="birthday" class="birthday__header">Date of birth</label>
@@ -132,18 +132,18 @@
             data: {
                 success: false,
                 errors: [],
-                countrys: [
+                countries: [
                     {
                         name: "Россия",
-                        citys: [ { name: "Москва"}, { name: "Санкт-Петербург" }, { name: "Томск" } ]
+                        cities: [ { name: "Москва"}, { name: "Санкт-Петербург" }, { name: "Томск" } ]
                     },
                     {
                         name: "Беларусь",
-                        citys: [ { name: "Минск"}, { name: "Брест" }, { name: "Гродно" } ]
+                        cities: [ { name: "Минск"}, { name: "Брест" }, { name: "Гродно" } ]
                     },
                     {
                         name: "Украина",
-                        citys: [ { name: "Киев"}, { name: "Харьков" }, { name: "Одесса" } ]
+                        cities: [ { name: "Киев"}, { name: "Харьков" }, { name: "Одесса" } ]
                     }
                 ]
             },
